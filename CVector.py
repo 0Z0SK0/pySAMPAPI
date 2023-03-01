@@ -1,5 +1,3 @@
-from math import sqrt
-
 class CVector(ctypes.Structure):
     _fields_ = [
         ("fX", ctypes.c_float),
@@ -54,3 +52,66 @@ class CVector(ctypes.Structure):
         CVector.fX = ctypes.c_float(self.fX)
         CVector.fY = ctypes.c_float(self.fY)
         CVector.fZ = ctypes.c_float(self.fZ)
+
+    # operators
+    def __add__(self, cv):
+        return CVector(self.fX + cv.fX, self.fY + cv.fY, self.fZ + cv.fZ) 
+    
+    def __sub__(self, cv):
+        return CVector(self.fX - cv.fX, self.fY - cv.fY, self.fZ - cv.fZ) 
+    
+    def __mul__(self, cv):
+        return CVector(self.fX * cv.fX, self.fY * cv.fY, self.fZ * cv.fZ)
+    
+    def __truediv__(self, cv):
+        return CVector(self.fX / cv.fX, self.fY / cv.fY, self.fZ / cv.fZ)
+    
+    def __iadd__(self, cv):
+        # for internal use
+        self.fX += cv.fX
+        self.fY += cv.fY
+        self.fZ += cv.fZ
+
+        CVector.fX = ctypes.c_float(self.fX)
+        CVector.fY = ctypes.c_float(self.fY)
+        CVector.fZ = ctypes.c_float(self.fZ)
+
+    def __isub__(self, cv):
+        # for internal use
+        self.fX -= cv.fX
+        self.fY -= cv.fY
+        self.fZ -= cv.fZ
+
+        CVector.fX = ctypes.c_float(self.fX)
+        CVector.fY = ctypes.c_float(self.fY)
+        CVector.fZ = ctypes.c_float(self.fZ)
+
+    def __imul__(self, cv):
+        # for internal use
+        self.fX *= cv.fX
+        self.fY *= cv.fY
+        self.fZ *= cv.fZ
+
+        CVector.fX = ctypes.c_float(self.fX)
+        CVector.fY = ctypes.c_float(self.fY)
+        CVector.fZ = ctypes.c_float(self.fZ)
+
+    def __idiv__(self, cv):
+        # for internal use
+        self.fX /= cv.fX
+        self.fY /= cv.fY
+        self.fZ /= cv.fZ
+
+        CVector.fX = ctypes.c_float(self.fX)
+        CVector.fY = ctypes.c_float(self.fY)
+        CVector.fZ = ctypes.c_float(self.fZ)
+    
+    def __eq__(self, cv):
+        return ((fabs( self.fX - cv.fX ) < 0.0001) and
+                (fabs( self.fY - cv.fY ) < 0.0001) and
+                (fabs( self.fZ - cv.fZ ) < 0.0001))
+    
+    def __ne__(self, cv):
+        return ((fabs( self.fX - cv.fX ) >= 0.0001) and
+                (fabs( self.fY - cv.fY ) >= 0.0001) and
+                (fabs( self.fZ - cv.fZ ) >= 0.0001))
