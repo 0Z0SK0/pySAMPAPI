@@ -1,4 +1,4 @@
-from ctypes import Structure, wintypes, c_char, c_void_p, c_int, c_uint, c_float, c_short
+from ctypes import Structure, wintypes, c_char, c_void_p, c_int, c_uint, c_float, c_short, c_char_p
 
 RW_STRUCT_ALIGN = c_int(~(0)>>1)
 RW_TEXTURE_NAME_LENGTH = 32
@@ -378,3 +378,40 @@ class RpAtomicContainer(Structure):
         ("atomic", RpAtomic),
         ("szName", c_char)
     ]
+
+class SReplaceParts(Structure):
+    _fields_ = [
+        ("szName", c_char_p),
+        ("ucIndex", c_char),
+        ("pReplacements", RpAtomicContainer),
+        ("uiReplacements", c_uint)
+    ]
+
+class CRenderWareSA():
+    '''
+    '''
+
+    def ReplacePartsCB(self, object = RwObject(), data = SReplaceParts()):
+        self.Atomic = RpAtomic(object)
+        self.szAtomicName = None
+
+        # iterate through our loaded atomics
+        for i in range(data.uiReplacements):
+            # get the correct atomic name based on the object # in our parent frame
+            if (data.ucIndex == 0):
+                self.szAtomicName = f"{data.szName}_ok"
+            else:
+                self.szAtomicName = f"{data.szName}_dam"
+
+            # see if we have such an atomic in our replacement atomics array
+            if (data.pReplacements[i].szName[0] == self.szAtomicName[0]):
+                # if so, override the geometry
+                self.RpAtomicSetGeometry(self.Atomic, data.pReplacements[i].atomic.geometry, 0)
+
+                # and copy the matrices
+                self.RwFrameCopyMatrix(self.RpGetFrame(self.Atomic), self.RpGetFrame(data.pReplacements[i].atomic))
+
+                self.object = data.pReplacements[i].atomic
+                data.ucIndex = data.ucIndex+1
+
+        return object
