@@ -1,4 +1,5 @@
-from ctypes import Structure, wintypes, c_char, c_void_p, c_int, c_uint, c_float, c_short, c_char_p
+from ctypes import Structure, wintypes, c_char, c_void_p, c_int, c_uint, c_float, c_short, c_char_p, CFUNCTYPE
+import ctypes
 
 RW_STRUCT_ALIGN = c_int(~(0)>>1)
 RW_TEXTURE_NAME_LENGTH = 32
@@ -387,10 +388,53 @@ class SReplaceParts(Structure):
         ("uiReplacements", c_uint)
     ]
 
-class CRenderWareSA():
-    '''
-    '''
+class RwStreamTypeData(Structure):
+    _fields_ = [
+        ("position", c_uint),
+        ("size", c_uint),
+        ("ptr", c_void_p),
+        ("file", c_void_p),
+        ("callbackClose", CFUNCTYPE(c_int, c_void_p)),
+        ("callbackRead", CFUNCTYPE(c_uint, c_void_p, c_void_p, c_uint)),
+        ("callbackWrite", CFUNCTYPE(c_int, c_void_p, c_void_p, c_uint)),
+        ("callbackOther", CFUNCTYPE(c_int, c_void_p, c_uint)),
+        ("ptr", c_void_p)
+    ]
 
+class RwStreamType(Structure):
+    _fields_ = [
+        ("STREAM_TYPE_NULL", c_int),
+        ("STREAM_TYPE_FILE", c_int),
+        ("STREAM_TYPE_FILENAME", c_int),
+        ("STREAM_TYPE_BUFFER", c_int),
+        ("STREAM_TYPE_CALLBACK", c_int),
+        ("STREAM_TYPE_LAST", c_int)
+    ]
+
+class RwStreamMode(Structure):
+    _fields_ = [
+        ("STREAM_MODE_NULL", c_int),
+        ("STREAM_MODE_READ", c_int),
+        ("STREAM_MODE_WRITE", c_int),
+        ("STREAM_MODE_LAST", c_int)
+    ]
+
+class RwStream(Structure):
+    _fields_ = [
+        ("type", RwStreamType),
+        ("mode", RwStreamMode),
+        ("pos", c_int),
+        ("data", RwStreamTypeData),
+        ("id", c_int)
+    ]
+
+class CRenderWareSA():
+    def RwStreamFindChunk(self, stream = RwStream(), type = c_uint(0), lengthOut = c_uint(0), versionOut = c_uint(0)):
+        self.func_type = CFUNCTYPE(c_int, RwStream, c_uint, c_uint, c_uint)
+        self.func = self.func_type(0x007ED2D0)
+        return self.func(stream, type, lengthOut, versionOut)
+
+    # custom functions
     def ReplacePartsCB(self, object = RwObject(), data = SReplaceParts()):
         self.Atomic = RpAtomic(object)
         self.szAtomicName = None
