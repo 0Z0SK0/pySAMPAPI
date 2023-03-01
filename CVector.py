@@ -1,10 +1,11 @@
+from ctypes import Structure, c_float
 from math import sqrt, fabs, atan2, pi
 
-class CVector(ctypes.Structure):
+class CVector(Structure):
     _fields_ = [
-        ("fX", ctypes.c_float),
-        ("fY", ctypes.c_float),
-        ("fZ", ctypes.c_float)
+        ("fX", c_float),
+        ("fY", c_float),
+        ("fZ", c_float)
     ]
 
     def __init__(self, fX, fY, fZ):
@@ -17,9 +18,9 @@ class CVector(ctypes.Structure):
             self.fY2 = self.fY / self.t
             self.fZ2 = self.fZ / self.t
 
-            CVector.fX = ctypes.c_float(self.fX2)
-            CVector.fY = ctypes.c_float(self.fY2)
-            CVector.fZ = ctypes.c_float(self.fZ2)
+            CVector.fX = c_float(self.fX2)
+            CVector.fY = c_float(self.fY2)
+            CVector.fZ = c_float(self.fZ2)
 
             # for internal use
             self.fX = self.fX2
@@ -51,9 +52,9 @@ class CVector(ctypes.Structure):
         self.fY = self._fZ * param.fX - param.fZ * self._fX
         self.fZ = self._fX * param.fY - param.fX * self._fY
 
-        CVector.fX = ctypes.c_float(self.fX)
-        CVector.fY = ctypes.c_float(self.fY)
-        CVector.fZ = ctypes.c_float(self.fZ)
+        CVector.fX = c_float(self.fX)
+        CVector.fY = c_float(self.fY)
+        CVector.fZ = c_float(self.fZ)
 
     def GetAngleRadians(self):
         return -atan2(self.fY, -self.fX)
@@ -85,9 +86,9 @@ class CVector(ctypes.Structure):
         self.fY += cv.fY
         self.fZ += cv.fZ
 
-        CVector.fX = ctypes.c_float(self.fX)
-        CVector.fY = ctypes.c_float(self.fY)
-        CVector.fZ = ctypes.c_float(self.fZ)
+        CVector.fX = c_float(self.fX)
+        CVector.fY = c_float(self.fY)
+        CVector.fZ = c_float(self.fZ)
 
     def __isub__(self, cv):
         # for internal use
@@ -95,9 +96,9 @@ class CVector(ctypes.Structure):
         self.fY -= cv.fY
         self.fZ -= cv.fZ
 
-        CVector.fX = ctypes.c_float(self.fX)
-        CVector.fY = ctypes.c_float(self.fY)
-        CVector.fZ = ctypes.c_float(self.fZ)
+        CVector.fX = c_float(self.fX)
+        CVector.fY = c_float(self.fY)
+        CVector.fZ = c_float(self.fZ)
 
     def __imul__(self, cv):
         # for internal use
@@ -105,9 +106,9 @@ class CVector(ctypes.Structure):
         self.fY *= cv.fY
         self.fZ *= cv.fZ
 
-        CVector.fX = ctypes.c_float(self.fX)
-        CVector.fY = ctypes.c_float(self.fY)
-        CVector.fZ = ctypes.c_float(self.fZ)
+        CVector.fX = c_float(self.fX)
+        CVector.fY = c_float(self.fY)
+        CVector.fZ = c_float(self.fZ)
 
     def __idiv__(self, cv):
         # for internal use
@@ -115,9 +116,9 @@ class CVector(ctypes.Structure):
         self.fY /= cv.fY
         self.fZ /= cv.fZ
 
-        CVector.fX = ctypes.c_float(self.fX)
-        CVector.fY = ctypes.c_float(self.fY)
-        CVector.fZ = ctypes.c_float(self.fZ)
+        CVector.fX = c_float(self.fX)
+        CVector.fY = c_float(self.fY)
+        CVector.fZ = c_float(self.fZ)
     
     def __eq__(self, cv):
         return ((fabs( self.fX - cv.fX ) < 0.0001) and
