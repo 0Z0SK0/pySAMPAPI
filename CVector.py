@@ -1,3 +1,5 @@
+from math import sqrt, fabs, atan2, pi
+
 class CVector(ctypes.Structure):
     _fields_ = [
         ("fX", ctypes.c_float),
@@ -52,6 +54,17 @@ class CVector(ctypes.Structure):
         CVector.fX = ctypes.c_float(self.fX)
         CVector.fY = ctypes.c_float(self.fY)
         CVector.fZ = ctypes.c_float(self.fZ)
+
+    def GetAngleRadians(self):
+        return -atan2(self.fY, -self.fX)
+    
+    def GetAngleDegrees(self):
+        self.radtodeg = 180.0/pi
+        self.ret = (atan2(self.fY, -self.fX) * self.radtodeg) + 270.0
+        if (self.ret >= 360.0):
+            self.ret -= 360.0
+
+        return self.ret
 
     # operators
     def __add__(self, cv):
