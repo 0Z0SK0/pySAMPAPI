@@ -3,8 +3,8 @@ from ctypes import Structure, Union, c_byte, c_char_p, c_void_p, c_int, c_uint8,
 
 class stTextdraw(Structure):
     _fields_ = [
-        ("szText", c_char),
-        ("szString", c_char),
+        ("szText", c_char * (800 + 1)),
+        ("szString", c_char * (1600 + 2)),
         ("fLetterWidth", c_float),
         ("fLetterHeight", c_float),
         ("dwLetterColor", wintypes.DWORD),
@@ -23,7 +23,7 @@ class stTextdraw(Structure):
         ("iStyle", c_int),
         ("fX", c_float),
         ("fY", c_float),
-        ("unk", c_byte),
+        ("unk", c_byte * 8),
         ("dword99B", wintypes.DWORD),
         ("dword99F", wintypes.DWORD),
         ("index", wintypes.DWORD),
@@ -31,7 +31,7 @@ class stTextdraw(Structure):
         ("sModel", c_uint16),
         ("fRot", c_float),
         ("fZoom", c_float),
-        ("sColor", wintypes.WORD),
+        ("sColor", wintypes.WORD * 2),
         ("f9BE", wintypes.BYTE),
         ("byte9BF", wintypes.BYTE),
         ("byte9C0", wintypes.BYTE),
@@ -375,9 +375,18 @@ class stSAMP(Structure):
 class CSamp():
     process = None
 
+    def __init__(self):
+        self.g_Players = None
+
     def GetBaseAddress(self):
         self.pm = pymem.Pymem('gta_sa.exe')
         self.modules = list(self.pm.list_modules())
         for self.module in self.modules:
             if(self.module.name == "samp.dll"):
                 return self.module.lpBaseOfDll
+
+    def IsInvalidPlayerID(self, playerID):
+        if(self.g_Players == None and playerID < 0 and playerID > 1000):
+            return True
+
+        return self.g_Players.IsListed[playerID]
