@@ -1,5 +1,5 @@
 import pymem
-from ctypes import Structure, c_byte, c_char_p, c_void_p, c_int, c_uint8, c_uint16, c_uint32, c_char, c_bool, c_float, wintypes
+from ctypes import Structure, Union, c_byte, c_char_p, c_void_p, c_int, c_uint8, c_uint16, c_uint32, c_char, c_bool, c_float, wintypes
 
 class stTextdraw(Structure):
     _fields_ = [
@@ -80,6 +80,211 @@ class stPlayerPool(Structure):
         ("pRemotePlayer", stRemotePlayer),
         ("iIsListed", c_int),
         ("dwPlayerIP", wintypes.DWORD)
+    ]
+
+class _sampKeys(Union):
+    _fields_ = [
+        ("sKeys", c_uint16),
+        ("stSampKeys", stSAMPKeys)
+    ]
+
+class stOnFootData(Structure):
+    _anonymous_ = ("u",)
+
+    _fields_ = [
+        ("sLeftRightKeys", c_uint16),
+        ("sUpDownKeys", c_uint16),
+        ("u", _sampKeys),
+        ("fPosition", c_float),
+        ("fQuaternion", c_float),
+        ("byteHealth", c_uint8),
+        ("byteArmor", c_uint8),
+        ("byteCurrentWeapon", c_uint8),
+        ("byteSpecialAction", c_uint8),
+        ("fMoveSpeed", c_float),
+        ("fSurfingOffsets", c_float),
+        ("sSurfingVehicleID", c_uint16),
+        ("sCurrentAnimationID", wintypes.SHORT),
+        ("sAnimFlags", wintypes.SHORT)
+    ]
+
+class _unkUni(Union):
+    _fields_ = [
+        ("HydraThrustAngle", c_uint16),
+        ("fTrainSpeed", c_float)
+    ]
+
+class stInCarData(Structure):
+    _anonymous_ = ("u","uu",)
+
+    _fields_ = [
+        ("sVehicleID", c_uint16),
+        ("sLeftRightKeys", c_uint16),
+        ("sUpDownKeys", c_uint16),
+        ("u", _sampKeys),
+        ("fQuaternion", c_float),
+        ("fPosition", c_float),
+        ("fMoveSpeed", c_float),
+        ("fVehicleHealth", c_float),
+        ("bytePlayerHealth", c_uint8),
+        ("byteArmor", c_uint8),
+        ("byteCurrentWeapon", c_uint8),
+        ("byteSiren", c_uint8),
+        ("byteLandingGearState", c_uint8),
+        ("sTrailerID", c_uint16),
+        ("uu", _unkUni)
+    ]
+
+class stAimData(Structure):
+    _fields_ = [
+        ("byteCamMode", wintypes.BYTE),
+        ("vecAimf1", c_float),
+        ("vecAimPos", c_float),
+        ("fAimZ", c_float),
+        ("byteCamExtZoom", wintypes.BYTE),
+        ("byteWeaponState", wintypes.BYTE),
+        ("bUnk", wintypes.BYTE)
+    ]
+
+class stTrailerData(Structure):
+    _fields_ = [
+        ("sTrailerID", c_uint16),
+        ("fPosition", c_float),
+        ("fQuaternion", c_float),
+        ("fSpeed", c_float),
+        ("fSpin", c_float)
+    ]
+
+class stPassengerData(Structure):
+    _anonymous_ = ("u",)
+
+    _fields_ = [
+        ("sVehicleID", c_uint16),
+        ("byteSeatID", c_uint8),
+        ("byteCurrentWeapon", c_uint8),
+        ("byteHealth", c_uint8),
+        ("byteArmor", c_uint8),
+        ("sLeftRightKeys", c_uint16),
+        ("sUpDownKeys", c_uint16),
+        ("u", _sampKeys),
+        ("fPosition", c_float)
+    ]
+
+class stDamageData(Structure):
+    _fields_ = [
+        ("sVehicleID_lastDamageProcessed", c_uint16),
+        ("iBumperDamage", c_int),
+        ("iDoorDamage", c_int),
+        ("byteLightDamage", c_uint8),
+        ("byteWheelDamage", c_uint8)
+    ]
+
+class stSurfData(Structure):
+    _fields_ = [
+        ("iIsSurfing", c_int),
+        ("fSurfPosition", c_float),
+        ("iUnk0", c_int),
+        ("sSurfingVehicleID", c_uint16),
+        ("ulSurfTick", c_uint32),
+        ("pSurfingVehicle", stSAMPVehicle),
+        ("iUnk1", c_int),
+        ("iSurfMode", c_int)
+    ]
+
+class stUnoccupiedData(Structure):
+    _fields_ = [
+        ("sVehicleID", c_uint16),
+        ("byteSeatID", c_uint8),
+        ("fRoll", c_float),
+        ("fDirection", c_float),
+        ("fPosition", c_float),
+        ("fMoveSpeed", c_float),
+        ("fTurnSpeed", c_float),
+        ("fHealth", c_float)
+    ]
+
+class stSpectatorData(Structure):
+    _anonymous_ = ("u",)
+
+    _fields_ = [
+        ("sLeftRightKeys", c_uint16),
+        ("sUpDownKeys", c_uint16),
+        ("u", _sampKeys),
+        ("fPosition", c_float)
+    ]
+
+class stStatsData(Structure):
+    _fields_ = [
+        ("iMoney", c_int),
+        ("iAmmo", c_int)
+    ]
+
+class stHeadSync(Structure):
+    _fields_ = [
+        ("fHeadSync", c_float),
+        ("iHeadSyncUpdateTick", c_int),
+        ("iHeadSyncLookTick", c_int)
+    ]
+
+class stLocalPlayer(Structure):
+    _fields_ = [
+        ("pSAMP_Actor", stSAMPPed),
+        ("sCurrentAnimID", c_uint16),
+        ("sAnimFlags", c_uint16),
+        ("ulUnk0", c_uint32),
+        ("iIsActive", c_int),
+        ("iIsWasted", c_int),
+        ("sCurrentVehicleID", c_uint16),
+        ("sLastVehicleID", c_uint16),
+        ("onFootData", stOnFootData),
+        ("passengerData", stPassengerData),
+        ("trailerData", stTrailerData),
+        ("inCarData", stInCarData),
+        ("aimData", stAimData),
+        ("byteTeamID", c_uint8),
+        ("iSpawnSkin", c_int),
+        ("byteUnk1", c_uint8),
+        ("fSpawnPos", c_float),
+        ("fSpawnRot", c_float),
+        ("iSpawnWeapon", c_int),
+        ("iSpawnAmmo", c_int),
+        ("iIsActorAlive", c_int),
+        ("iSpawnClassLoaded", c_int),
+        ("ulSpawnSelectionTick", c_uint32),
+        ("ulSpawnSelectionStart", c_uint32),
+        ("iIsSpectating", c_int),
+        ("byteTeamID2", c_uint8),
+        ("usUnk2", c_uint16),
+        ("ulSendTick", c_uint32),
+        ("ulSpectateTick", c_uint32),
+        ("ulAimTick", c_uint32),
+        ("ulStatsUpdateTick", c_uint32),
+        ("ulWeapUpdateTick", c_uint32),
+        ("sAimingAtPid", c_uint16),
+        ("usUnk3", c_uint16),
+        ("byteCurrentWeapon", c_uint8),
+        ("byteWeaponInventory", c_uint8),
+        ("iWeaponAmmo", c_int),
+        ("iPassengerDriveBy", c_int),
+        ("byteCurrentInterior", c_uint8),
+        ("iIsInRCVehicle", c_int),
+        ("sTargetObjectID", c_uint16),
+        ("sTargetVehicleID", c_uint16),
+        ("sTargetPlayerID", c_uint16),
+        ("headSyncData", stHeadSync),
+        ("ulHeadSyncTick", c_uint32),
+        ("byteSpace3", wintypes.BYTE),
+        ("surfData", stSurfData),
+        ("iClassSelectionOnDeath", c_int),
+        ("iSpawnClassID", c_int),
+        ("iRequestToSpawn", c_int),
+        ("iIsInSpawnScreen", c_int),
+        ("ulUnk4", c_uint32),
+        ("byteSpectateMode", c_uint8),
+        ("byteSpectateType", c_uint8),
+        ("iSpectateID", c_int),
+        ("iInitiatedSpectating", c_int),
+        ("vehicleDamageData", stDamageData)
     ]
 
 class stDialogInfo(Structure):
