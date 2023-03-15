@@ -1,5 +1,6 @@
 from ctypes import Structure, wintypes, c_char, c_void_p, c_int, c_uint, c_float, c_short, c_char_p, CFUNCTYPE
 import ctypes
+import mmap
 
 RW_STRUCT_ALIGN = c_int(~(0)>>1)
 RW_TEXTURE_NAME_LENGTH = 32
@@ -429,6 +430,21 @@ class RwStream(Structure):
     ]
 
 class CRenderWareSA():
+    def ReplaceVehicleModel(self, pNew = RpClump(), usModelID = wintypes.SHORT(0)):
+        buf = mmap.mmap(-1, mmap.PAGESIZE, prot=mmap.PROT_READ | mmap.PROT_WRITE | mmap.PROT_EXEC)
+
+        # need to read modelInfo
+        # 
+
+        ftype = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)
+        fpointer = ctypes.c_void_p.from_buffer(buf)
+
+        f = ftype(ctypes.addressof(fpointer))
+
+        buf.write(
+            f"mov ecx, " # pPool[usModelID]
+        )
+
     def RwStreamFindChunk(self, stream = RwStream(), type = c_uint(0), lengthOut = c_uint(0), versionOut = c_uint(0)):
         self.func_type = CFUNCTYPE(c_int, RwStream, c_uint, c_uint, c_uint)
         self.func = self.func_type(0x007ED2D0)
